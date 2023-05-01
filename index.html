@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>شاومي - ينتشر الآن</title>
+    <meta charset="UTF-8">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f2f2f2;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .progress {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 20px;
+      }
+
+      .progress > span {
+        position: absolute;
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        box-sizing: border-box;
+      }
+
+      .progress .progress-left {
+        clip: rect(0, 60px, 120px, 0);
+      }
+
+      .progress .progress-right {
+        clip: rect(0, 120px, 120px, 60px);
+      }
+
+      .progress > span:before,
+      .progress > span:after {
+        content: "";
+        position: absolute;
+        display: block;
+        border-radius: 50%;
+      }
+
+      .progress > span:before {
+        top: 0;
+        left: 0;
+        width: 60px;
+        height: 120px;
+        background-color: #fff;
+      }
+
+      .progress > span:after {
+        top: 0;
+        left: 60px;
+        width: 60px;
+        height: 120px;
+        background-color: #1abc9c;
+        transform-origin: left center;
+        animation: loading 2s linear infinite;
+      }
+
+      .progress.progress-1 > span:after {
+        background-color: #3498db;
+      }
+
+      .progress.progress-2 > span:after {
+        background-color: #f1c40f;
+      }
+
+      .progress.progress-3 > span:after {
+        background-color: #e74c3c;
+      }
+
+      .progress > span:before,
+      .progress > span:after {
+        content: "";
+        position: absolute;
+        display: block;
+        border-radius: 50%;
+      }
+
+      .progress > span:before {
+        top: 0;
+        left: 0;
+        width: 60px;
+        height: 120px;
+        background-color: #fff;
+      }
+
+      .progress > span:after {
+        top: 0;
+        left: 60px;
+        width: 60px;
+        height: 120px;
+        background-color: #1abc9c;
+        transform-origin: left center;
+        animation: loading 2s linear infinite;
+      }
+
+      .progress.progress-1 > span:after {
+        background-color: #3498db;
+      }
+
+      .progress.progress-2 > span:after {
+        background-color: #f1c40f;
+      }
+
+      .progress.progress-3 > span:after {
+        background-color: #e74c3c;
+      }
+
+      @keyframes loading {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="progress progress-1">
+        <span class="progress-left"></span>
+        <span class="progress-right"></span>
+        <div class="progress-value">0%</div>
+      </div>
+      <div class="progress progress-2">
+        <span class="progress-left"></span>
+        <span class="progress-right"></span>
+        <div class="progress-value">0%</div>
+      </div>
+      <div class="progress progress-3">
+        <span class="progress-left"></span>
+        <span class="progress-right"></span>
+        <div class="progress-value">0%</div>
+      </div>
+    </div>
+    <script>
+      // Update the progress bars every 10 minutes
+      setInterval(function() {
+        // Get the current progress values from the server
+        fetch('/progress.json')
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(progress) {
+            progress = progress || {}; // Default to empty object if no progress exists
+
+            // Update the progress values for each progress bar
+            var progress1 = progress.progress1 || 0;
+            var progress2 = progress.progress2 || 0;
+            var progress3 = progress.progress3 || 0;
+
+            progress1 += 2;
+            progress2 += 2;
+            progress3 += 2;
+
+            // Update the progress values on the server
+            fetch('/progress.json', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                progress1: progress1,
+                progress2: progress2,
+                progress3: progress3
+              })
+            });
+
+            // Update the progress bars on the page
+            document.querySelector('.progress-1 .progress-value').innerText = progress1 + '%';
+            document.querySelector('.progress-2 .progress-value').innerText = progress2 + '%';
+            document.querySelector('.progress-3 .progress-value').innerText = progress3 + '%';
+
+            // Update the progress bar animations
+            document.querySelector('.progress-1 .progress-right').style.transform = 'rotate(' + (progress1 / 100 * 360) + 'deg)';
+            document.querySelector('.progress-2 .progress-right').style.transform = 'rotate(' + (progress2 / 100 * 360) + 'deg)';
+            document.querySelector('.progress-3 .progress-right').style.transform = 'rotate(' + (progress3 / 100 * 360) + 'deg)';
+          });
+      }, 10 * 60 * 1000); // Execute every 10 minutes
+    </script>
+  </body>
+</html>
